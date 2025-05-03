@@ -11,8 +11,36 @@ import "./App.css";
 5 - If the sum is not equal to the user input, display "Try Again :("
 */
 
-const initialState = {};
-function reducer() {}
+const initialState = {
+  values: { random1: 0, random2: 0 },
+  input: 0,
+  result: 0,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'setValues':
+      return {
+        ...state,
+        values: action.payload.values
+      }
+
+    case 'setInput':
+      return {
+        ...state,
+        input: action.payload.input
+      }
+
+    case 'checkResult':
+      return {
+        ...state,
+        result: action.payload.result
+      }
+
+    default:
+      return state
+  }
+}
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);

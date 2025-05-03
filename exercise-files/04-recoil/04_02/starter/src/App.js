@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from "react";
+import { atom } from 'recoil'
 import "./App.css";
 
 const styles = {
@@ -16,23 +17,43 @@ const items = [
   { id: 3, task: "learn Redux", done: false },
 ];
 
+const listState = atom({
+  key: 'listState',
+  default: items,
+});
+
+const allState = atom({
+  key: 'allState',
+  default: items,
+});
+
+const filterState = atom({
+  key: 'filterState',
+  default: false,
+});
+
+const inputValue = atom({
+  key: 'inputValue',
+  default: "",
+});
+
 function App() {
   const ref = useRef();
   const [list, setList] = useState(items)
   const [all, setAll] = useState(items)
   const [isFiltered, filtering] = useState(false)
   const [input, setInput] = useState("");
- 
+
   const onSubmit = (e) => {
     e.preventDefault();
     if (!input) {
       return false;
     }
-     const newItem = {
-        id: new Date().getMilliseconds(),
-        task: input,
-        done: false,
-      };
+    const newItem = {
+      id: new Date().getMilliseconds(),
+      task: input,
+      done: false,
+    };
     setAll([...all, newItem])
     setList([...items, newItem])
     setInput("");

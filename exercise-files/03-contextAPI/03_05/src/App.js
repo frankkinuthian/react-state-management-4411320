@@ -1,7 +1,8 @@
-import { useReducer, useRef } from "react";
+import { useReducer, useRef, useContext } from "react";
 import Form from "./components/Form";
 import Result from "./components/Result";
 import Score from "./components/Score";
+import { Context } from "./context";
 import "./App.css";
 
 /*
@@ -47,7 +48,10 @@ function reducer(state, action) {
 
 function App() {
   const ref = useRef();
-  const [state, dispatch] = useReducer(reducer, initialState);
+  // const [state, dispatch] = useReducer(reducer, initialState);
+  const value = useContext(Context)
+  const [state, dispatch] = value
+
 
   const generateRandomValues = () => {
     const random1 = Math.floor(Math.random() * 50);

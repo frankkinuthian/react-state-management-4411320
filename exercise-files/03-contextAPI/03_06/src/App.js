@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import { Context } from "./context";
 import Form from "./components/Form";
 import Result from "./components/Result";
 import Score from "./components/Score";
@@ -14,9 +12,6 @@ import "./App.css";
 */
 
 function App() {
-  const value = useContext(Context);
-  const [state] = value;
-
   return (
     <div className="p-5" style={{ width: "80%" }}>
       <fieldset>

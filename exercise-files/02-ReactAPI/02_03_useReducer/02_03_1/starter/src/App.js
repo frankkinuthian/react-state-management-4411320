@@ -96,10 +96,22 @@ function Result({ result, input }) {
     </div>
   );
 }
+
+const initialState = {
+
+};
+
+
+function reducer() {
+}
+
 function App() {
+  const [state, dispatch] = useReducer(reducer, initialState)
   const [values, setValues] = useState({ random1: 0, random2: 0 });
   const [input, setInput] = useState(0);
   const [result, checkResult] = useState("");
+
+  
   const generateRandomValues = () => {
     const random1 = Math.floor(Math.random() * 50);
     const random2 = Math.floor(Math.random() * 50);

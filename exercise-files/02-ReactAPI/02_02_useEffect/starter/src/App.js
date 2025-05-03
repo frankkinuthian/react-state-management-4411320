@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Step 1: Import useEffect
 import "./App.css";
 
 /*
@@ -74,15 +74,15 @@ function Form({ generate, guess, onChange, values }) {
   );
 }
 
-function Result() {
+function Result({ result }) {
   return (
     <div
       className="d-flex flex-column justify-content-between"
       style={{ width: "50%" }}
     >
       {/* <div className="d-flex justify-content-end align-items-end px-2 text-secondary"><p className="h3">00</p></div> */}
-      <div className={`d-flex ${color} justify-content-center mb-5`}>
-        <p className="h1">{message}</p>
+      <div className={`d-flex text-success justify-content-center mb-5`}>
+        <p className="h1">{result}</p>
       </div>
     </div>
   );
@@ -91,13 +91,27 @@ function Result() {
 function App() {
   const [values, setValues] = useState({ random1: 0, random2: 0 });
   const [input, setInput] = useState(0);
+  const [result, setResult] = useState(""); // Step 3: Initialize result state
 
   const generateRandomValues = () => {
     const random1 = Math.floor(Math.random() * 50);
     const random2 = Math.floor(Math.random() * 50);
     setValues({ random1, random2 });
   };
-  const guessTheNumber = () => {};
+
+  const guessTheNumber = () => {
+    const sum = values.random1 + values.random2;
+    if (sum === parseInt(input, 10)) {
+      setResult("You guessed right!");
+    } else {
+      setResult("Try Again :(");
+    }
+  };
+
+  // Step 2: Add useEffect to generate random values on component mount
+  useEffect(() => {
+    generateRandomValues();
+  }, []); // Empty dependency array means this effect runs only once after the initial render
 
   return (
     <div className="p-5" style={{ width: "80%" }}>
@@ -110,7 +124,7 @@ function App() {
             onChange={setInput}
             values={values}
           />
-          <Result result={result} input={input} />
+          <Result result={result} />
         </div>
       </fieldset>
     </div>

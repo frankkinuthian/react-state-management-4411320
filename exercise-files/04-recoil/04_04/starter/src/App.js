@@ -1,5 +1,5 @@
-import { useState, useRef, useMemo } from "react";
-import { atom, useRecoilState } from "recoil";
+import { useRef } from "react";
+import { atom, useRecoilState, selector, useRecoilValue, useSetRecoilState } from "recoil";
 import "./App.css";
 
 const styles = {
@@ -36,12 +36,33 @@ const inputValue = atom({
   default: false,
 });
 
+const listItems = selector({
+  key: 'listItems',
+  get: ({ get }) => {
+    const all = get(allState);
+    const bool = get(filterState);
+    if(bool) {
+      return all.filter((item) => item.done);
+    }
+    return all;
+  }
+})
+const itemsCount = selector({
+  key: 'isVisible',
+  get: ({ get }) => {
+    const list = get(listState)
+    return list.some((item) => item.done)
+  }
+})
+
 function App() {
   const ref = useRef();
   const [list, setList] = useRecoilState(listState);
   const [all, setAll] = useRecoilState(allState);
-  const [isFiltered, filtering] = useRecoilState(filterState);
+  const filtering = useSetRecoilState(filterState);
   const [input, setInput] = useRecoilState(inputValue);
+  const allItems = useRecoilValue(listItems);
+  const isVisible = useRecoilValue(itemsCount);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -73,16 +94,9 @@ function App() {
     setAll(all_filtered);
   };
 
-  const isVisible = useMemo(() => {
-    return all.some((item) => item.done);
-  }, [all]);
+  
 
-  const allItems = useMemo(() => {
-    if (isFiltered) {
-      return all.filter((item) => item.done);
-    }
-    return all;
-  }, [all, isFiltered]);
+  
   return (
     <div className="container mt-5 " style={styles.container}>
       <form onSubmit={onSubmit} className="mb-4">

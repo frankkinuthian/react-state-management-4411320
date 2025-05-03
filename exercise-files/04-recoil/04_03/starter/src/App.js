@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo } from "react";
-import { atom } from "recoil";
+import { atom, useRecoilState } from "recoil";
 import "./App.css";
 
 const styles = {
@@ -38,10 +38,10 @@ const inputValue = atom({
 
 function App() {
   const ref = useRef();
-  const [list, setList] = useState(items);
-  const [all, setAll] = useState(items);
-  const [isFiltered, filtering] = useState(false);
-  const [input, setInput] = useState("");
+  const [list, setList] = useRecoilState(listState);
+  const [all, setAll] = useRecoilState(allState);
+  const [isFiltered, filtering] = useRecoilState(filterState);
+  const [input, setInput] = useRecoilState(inputValue);
 
   const onSubmit = (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer } from 'react';
 
-export const Context = createContext();
+const Context = createContext();
 
 const initialState = {
   count: 0,
@@ -26,8 +26,8 @@ function reducer(state, action) {
         result: action.payload.result,
         values: { random1: 0, random2: 0 },
         count:
-          action.payload.result === parseInt(state.input)
-            ? state.count + 1
+          action.payload.result === parseInt(action.payload.input)
+            ? state.count++
             : state.count,
       };
     default:
@@ -37,8 +37,7 @@ function reducer(state, action) {
 
 const Provider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  return (
-    <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>
-  );
-};
+  return <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>;
+}
+
 export default Provider;

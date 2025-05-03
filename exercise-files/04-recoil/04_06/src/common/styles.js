@@ -1,3 +1,4 @@
+// eslint-disable-next-line 
 export default {
   container: { width: "40%" },
   item_done: {
