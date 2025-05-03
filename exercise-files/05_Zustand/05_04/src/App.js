@@ -1,4 +1,5 @@
-import { useState, useRef, useMemo } from "react";
+// src/App.js
+import { useStore } from "./store";
 import "./App.css";
 
 const styles = {
@@ -14,12 +15,6 @@ const styles = {
     fontStyle: "italic",
   },
 };
-
-const items = [
-  { id: 1, task: "pay bills", done: false },
-  { id: 2, task: "buy groceries", done: false },
-  { id: 3, task: "learn Redux", done: false },
-];
 
 function Header({ count }) {
   return (
@@ -48,7 +43,7 @@ function Footer({ archive, filter, isVisible }) {
           name="radioFilter"
           id="flexRadioDefault1"
         />
-        <label className="form-check-label" for="flexRadioDefault1">
+        <label className="form-check-label" htmlFor="flexRadioDefault1">
           &nbsp; all &nbsp;
         </label>
 
@@ -59,7 +54,7 @@ function Footer({ archive, filter, isVisible }) {
           name="radioFilter"
           id="flexRadioDefault2"
         />
-        <label className="form-check-label" for="flexRadioDefault2">
+        <label className="form-check-label" htmlFor="flexRadioDefault2">
           &nbsp; active &nbsp;
         </label>
 
@@ -70,7 +65,7 @@ function Footer({ archive, filter, isVisible }) {
           name="radioFilter"
           id="flexRadioDefault3"
         />
-        <label className="form-check-label" for="flexRadioDefault2">
+        <label className="form-check-label" htmlFor="flexRadioDefault3">
           &nbsp; completed &nbsp;
         </label>
       </form>
@@ -86,84 +81,56 @@ function Footer({ archive, filter, isVisible }) {
 }
 
 function App() {
-  const ref = useRef();
-  const [list, setList] = useState(items);
-  const [all, setAll] = useState(items);
-  const [filter, setFilter] = useState("all");
-  const [input, setInput] = useState("");
+  const items = useStore((state) => state.items);
+  const filter = useStore((state) => state.filter);
+  const input = useStore((state) => state.input);
+  const addTask = useStore((state) => state.addTask);
+  const toggleTask = useStore((state) => state.toggleTask);
+  const archiveTasks = useStore((state) => state.archiveTasks);
+  const setFilter = useStore((state) => state.setFilter);
+  const setInput = useStore((state) => state.setInput);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!input) {
-      return false;
-    }
-    const newItem = {
-      id: new Date().getMilliseconds(),
-      task: input,
-      done: false,
-    };
-    setAll([...all, newItem]);
-    setList([...items, newItem]);
-    setInput("");
-    ref.current.value = null;
-  };
-  const check = (id) => {
-    const updated = all.map((item) => {
-      return item.id === id ? { ...item, done: !item.done } : item;
-    });
-    setList(updated);
-    setAll(updated);
-  };
-  const archive = () => {
-    const all_filtered = all.filter((item) => !item.done);
-    const filtered = list.filter((item) => !item.done);
-    setList(filtered);
-    setAll(all_filtered);
+    if (!input) return false;
+    addTask(input);
   };
 
-  const isVisible = useMemo(() => {
-    return all.some((item) => item.done);
-  }, [all]);
+  const isVisible = items.some((item) => item.done);
 
-  const allItems = useMemo(() => {
-    if (filter === "completed") {
-      return all.filter((item) => item.done);
-    }
-    if (filter === "active") {
-      return all.filter((item) => !item.done);
-    }
-    return all;
-  }, [filter, all]);
+  const allItems = items.filter((item) =>
+    filter === "completed"
+      ? item.done
+      : filter === "active"
+        ? !item.done
+        : true
+  );
 
-  const count = useMemo(() => {
-    if (!all.length) {
-      return false;
-    }
-    return all.length > 1 ? `${all.length} items` : `${all.length} item`;
-  }, [all]);
+  const count = items.length > 1 ? `${items.length} items` : `${items.length} item`;
 
   return (
     <div className="mt-5" style={styles.container}>
       <Header count={count} />
       <form onSubmit={onSubmit} className="mb-4 px-4">
         <input
-          ref={ref}
           className="form-control mb-4"
           type="text"
+          value={input}
           onChange={(e) => setInput(e.target.value)}
         />
       </form>
       <ul className="px-5">
         {allItems.map((item) => (
           <li
+            key={item.id}
             style={item.done ? styles.item_done : {}}
-            onClick={() => check(item.id)}
+            onClick={() => toggleTask(item.id)}
           >
             {item.task}
           </li>
         ))}
       </ul>
-      <Footer archive={archive} filter={setFilter} isVisible={isVisible} />
+      <Footer archive={archiveTasks} filter={setFilter} isVisible={isVisible} />
     </div>
   );
 }
