@@ -1,4 +1,4 @@
-import { useState } from "react";
+import useCounter  from "./store.js";
 import "./App.css";
 
 const styles = {
@@ -6,12 +6,10 @@ const styles = {
 };
 
 function App() {
-  const [count, setCount] = useState(0);
 
-  const increment = () => setCount((prevCount) => prevCount + 1);
-  const decrement = () => setCount((prevCount) => prevCount - 1);
-  const reset = () => setCount(0);
+  const { count, increment, decrement, reset } = useCounter();
 
+  
   return (
     <div>
       <h1 className="text-center mt-5">Counter</h1>
